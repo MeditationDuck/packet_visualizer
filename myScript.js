@@ -62,68 +62,54 @@ readTextFile("./icmp.json", function(text){
     //var data1 = data[1]._source.layers.frame;
     //console.log(data1["frame.protocols"]);
 
-    var pro_type_count = [0,0,0,0,0];    //version1   counting packet
+    //var pro_type_count = [0,0,0,0,0];    //version1   counting packet
     var pro_type = [];        // i wanted to know how many kinds of packet from "_source.layers.frame.frame.protocols
-    var count = new Object();      //version2   counting packet and discevering packet what kind there are
+    var counts = {};      //version2   counting packet and discevering packet what kind there are
+    //protocol 
+    // count
+
+    var obj = {};
+
     var find_name = ["tcp", "udp", "icmp", "igmp"];
     for (var i = 0; i < data.length; i++) {
-        // var a = data[i]._source.layers;
-       
-        
-        
-        // if(a.tcp){
-        //     pro_type_count[0] += 1;
-        // }else if(a.udp){
-        //     pro_type_count[1] += 1;
-        // }else if(a.icmpv6 || a.icmp){
-        //     pro_type_count[2] +=1;
-        // }else if(a.arp){
-        //     pro_type_count[3] +=1;
-        // } else {
-        //     pro_type_count[4] +=1;
-        //     //console.log(a);
-        // }
-        
-        // var layers_keys = [];
-        // for (let key in data[i]._source.layers){
-        //     layers_keys.push(key);
-        // }
-        // console.log(layers_keys.length);
 
         var protocols_name = data[i]._source.layers.frame["frame.protocols"]; 
-        console.log(protocols_name);
+        //console.log(protocols_name);
 
+        var j = 0;
+        for (j in find_name){
+            if (protocols_name.search(find_name[j]) != -1){
 
-        // var i = 0;
-        // for (i in find_name){
-        //     if (protocols_name.search(find_name[i]) != -1){
-        //         if(isNaN(count[find_name[i]])) {
-        //             count[find_name[i]] = 0;
-        //             //console.log("new");
-        //         }
-        //         count[find_name[i]] += 1;
-                
-            
-        //     }
-        // }
-
-
-
-        if (protocols_name.includes('eth:ethertype:')){
-            protocols_name = protocols_name.replace('eth:ethertype:', '');
-        }else{
-            console.log("!!!" + protocols_name);
+                if(isNaN(counts[find_name[j]])) {
+                    counts[find_name[j]] = 0;
+                    console.log("new");
+                }
+                counts[find_name[j]] += 1;
+            }
         }
-        if (!pro_type.includes(protocols_name)){
-            pro_type.push(protocols_name);
-        } 
+        
+
+
+        // * delete eth:ethertype: from protocols_name
+
+        // if (protocols_name.includes('eth:ethertype:')){
+        //     protocols_name = protocols_name.replace('eth:ethertype:', '');
+        // }else{
+        //     console.log("!!!" + protocols_name);
+        // }
+        // if (!pro_type.includes(protocols_name)){
+        //     pro_type.push(protocols_name);
+        // } 
         
     }   
-    console.dir(pro_type);
-    console.dir(count);
-    console.log(pro_type);
-    draw_graph(pro_type_count);
+    //console.dir(pro_type);
+    console.log(counts);
+    // console.log(pro_type);
 
+    // * write graph
+    //draw_graph(pro_type_count);
+
+    console.log(typeof data[1]._source.layers.frame["frame.protocols"]);
     
     
 
